@@ -1,7 +1,7 @@
 <?php
 include("m.php");
 require('mpd.class.php');
-$mpd = new MPD($host, $port, $password);
+
 if(isset($_GET['play'])){
 	$mpd->play_id(filter_input(INPUT_GET,'play'));
 }

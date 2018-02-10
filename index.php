@@ -2,7 +2,6 @@
 include("m.php");
 require('mpd.class.php');
 
-$mpd = new MPD($host, $port, $password);
 $playlist = $mpd->playlist();
 ?><!-- Required meta tags -->
 <header>
