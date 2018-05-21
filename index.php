@@ -1,6 +1,5 @@
 <?php
 include("m.php");
-require('mpd.class.php');
 
 $playlist = $mpd->playlist();
 ?><!-- Required meta tags -->
