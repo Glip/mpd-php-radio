@@ -1,9 +1,9 @@
-<?php
-/* 
- * PHP MPD (mpd.class.php) is a single PHP class that gives easy access to 
+	<?php
+/*
+ * PHP MPD (mpd.class.php) is a single PHP class that gives easy access to
  * a MPD (Music Player Daemon) server from any web application.
  * Copyright (C) 2011  Jimmi Kristensen (picbot@gmail.com)
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -70,7 +70,7 @@ define("CMD_KILL", "kill");
 
 
 class MPD {
-	
+
 	private $php_mpd_version = '1.1';
 	private $host;
 	private $port;
@@ -103,10 +103,10 @@ class MPD {
 	private $bitrate;
 	private $audio;
 	private $single;
-	
+
 	/**
-	 * Instantiate the MPD object 
-	 * 
+	 * Instantiate the MPD object
+	 *
 	 * @param string $host The hostname or IP address of MPD server
 	 * @param integer $port The port number of the MPD server
 	 * @param string $pwd (Optional) The password of the MPD server
@@ -118,7 +118,7 @@ class MPD {
 		$this->port = $port;
 		$this->pwd = $pwd;
 		$this->conn_timeout = $conn_timeout;
-		
+
 		$conn = $this->connect();
 		if ($conn === false) {
 			return false;
@@ -130,13 +130,13 @@ class MPD {
 					$this->err_log[] = "Invalid password";
 					return false;
 				}
-				
+
 				if ($this->update() === false) {
 					$this->is_connected = false;
 					$this->err_log[] = "Given password does not have read access";
 					return false;
 				}
-				
+
 			} else {
 				if ($this->update() === false) {
 					$this->err_log[] = "Password required to access server";
@@ -146,10 +146,10 @@ class MPD {
 		}
 		return $this->is_connected;
 	}
-	
+
 	/**
 	 * Connects to MPD
-	 * 
+	 *
 	 * @return boolean Returns false if it was unable to connect and true if it connected
 	 */
 	private function connect() {
@@ -172,10 +172,10 @@ class MPD {
 			return false;
 		}
 	}
-	
+
 	/**
-	 * Sets consume state to STATE, STATE should be 0 or 1. When consume is activated, each song played is removed from playlist. 
-	 * 
+	 * Sets consume state to STATE, STATE should be 0 or 1. When consume is activated, each song played is removed from playlist.
+	 *
 	 * @param integer $state The consume state
 	 * @return boolean Status of the command
 	 */
@@ -184,7 +184,7 @@ class MPD {
 			$this->err_log[] = "Consume state should be 0 or 1";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_CONSUME, array($state)) !== false) {
 			$this->consume = $state;
 			return true;
@@ -194,7 +194,7 @@ class MPD {
 
 	/**
 	 * Sets crossfading between songs.
-	 * 
+	 *
 	 * @param integer $seconds Crossfade seconds
 	 * @return boolean Status of the command
 	 */
@@ -203,17 +203,17 @@ class MPD {
 			$this->err_log[] = "Crossfade should be numeric value in seconds";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_XFADE, array($seconds)) !== false) {
 			$this->xfade = $seconds;
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Sets random state to STATE, STATE should be 0 or 1.
-	 * 
+	 *
 	 * @param integer $state 0 = no and 1 = yes
 	 * @return boolean Status of the command
 	 */
@@ -222,17 +222,17 @@ class MPD {
 			$this->err_log[] = "Random should be 0 or 1";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_RANDOM, array($state)) !== false) {
 			$this->random = $state;
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Sets repeat state to STATE, STATE should be 0 or 1.
-	 * 
+	 *
 	 * @param integer $state 0 = no and 1 = yes
 	 * @return boolean Status of the command
 	 */
@@ -241,17 +241,17 @@ class MPD {
 			$this->err_log[] = "Repeat should be 0 or 1";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_REPEAT, array($state)) !== false) {
 			$this->repeat = $state;
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Sets volume to VOL, the range of volume is 0-100.
-	 * 
+	 *
 	 * @param integer $vol The new volume
 	 * @return boolean Status of the command
 	 */
@@ -260,17 +260,17 @@ class MPD {
 			$this->err_log[] = "Volume must be numeric and between 0 and 100";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_SETVOL, array($vol)) !== false) {
 			$this->volume = $vol;
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Adjusts the volume up or down depending if the modifier is positive or negative
-	 * 
+	 *
 	 * @param integer $mod Volume modification
 	 * @return boolean Status of the command
 	 */
@@ -279,18 +279,18 @@ class MPD {
 			$this->err_log[] = "Volume modification must be a numeric value";
 			return false;
 		}
-		
+
 		$vol = $this->volume + $mod;
 		if ($this->setvol($vol) === true) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Sets single state to STATE, STATE should be 0 or 1. When single is activated, playback 
-	 * is stopped after current song, or song is repeated if the 'repeat' mode is enabled. 
-	 * 
+	 * Sets single state to STATE, STATE should be 0 or 1. When single is activated, playback
+	 * is stopped after current song, or song is repeated if the 'repeat' mode is enabled.
+	 *
 	 * @param integer $state Activate or deactivate single
 	 * @return boolean Status of the command
 	 */
@@ -299,17 +299,17 @@ class MPD {
 			$this->err_log[] = "Single should be 0 or 1";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_SINGLE, array($state)) !== false) {
 			$this->single = $state;
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Plays next song in the playlist.
-	 * 
+	 *
 	 * @return boolean Status of the command
 	 */
 	function next() {
@@ -319,10 +319,10 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Plays previous song in the playlist.
-	 * 
+	 *
 	 * @return boolean Status of the command
 	 */
 	function prev() {
@@ -332,10 +332,10 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Toggles pause/resumes playing, PAUSE is 0 or 1. 
-	 * 
+	 * Toggles pause/resumes playing, PAUSE is 0 or 1.
+	 *
 	 * @param integer $pause 0 = play and 1 = pause
 	 * @return boolean Status of the command
 	 */
@@ -344,7 +344,7 @@ class MPD {
 			$this->err_log[] = "Pause should be 0 or 1";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_PAUSE, array($pause)) !== false) {
 			if ($pause == 1) {
 				$this->state = STATE_PAUSED;
@@ -355,10 +355,10 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Stops playing.
-	 * 
+	 *
 	 * @return boolean Status of the command
 	 */
 	function stop() {
@@ -368,10 +368,10 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Begins playing the playlist at song number SONGPOS.
-	 * 
+	 *
 	 * @param integer $song_pos The song position in playlist
 	 * @return boolean Status of the command
 	 */
@@ -380,17 +380,17 @@ class MPD {
 			$this->err_log[] = "Song position should be numeric";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_PLAY, array($song_pos)) !== false) {
 			$this->update();
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Begins playing the playlist at song SONGID. 
-	 * 
+	 * Begins playing the playlist at song SONGID.
+	 *
 	 * @param integer $id The song ID
 	 * @return boolean Status of the command
 	 */
@@ -399,17 +399,17 @@ class MPD {
 			$this->err_log[] = "Song ID should be numeric";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_PLAYID, array($id)) !== false) {
 			$this->update();
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Seeks to the position TIME (in seconds) of entry SONGPOS in the playlist.
-	 * 
+	 *
 	 * @param integer $song_pos The song position in playlist
 	 * @param integer $time Position time in seconds
 	 * @return boolean Status of the command
@@ -419,17 +419,17 @@ class MPD {
 			$this->err_log[] = "Song position and time should both be numeric";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_SEEK, array($song_pos, $time)) !== false) {
 			$this->update();
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Seeks to the position TIME (in seconds) of song SONGID.
-	 * 
+	 *
 	 * @param integer $song_id ID of the song
 	 * @param integer $time Position time in seconds
 	 * @return boolean Status of the command
@@ -439,17 +439,17 @@ class MPD {
 			$this->err_log[] = "Song ID and time should both be numeric";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_SEEKID, array($song_pos, $time)) !== false) {
 			$this->update();
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Adds the file URI to the playlist (directories add recursively). URI can also be a single file.
-	 * 
+	 *
 	 * @param string $uri The file or dir to add
 	 * @return boolean Status of the command
 	 */
@@ -460,14 +460,14 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Adds a song to the playlist (non-recursive) and returns the song id.
 	 * URI is always a single file or URL. For example:
 	 * addid "foo.mp3"
 	 * Id: 999
 	 * OK
-	 * 
+	 *
 	 * @param string $uri The file or dir to add
 	 * @param integer $pos Position in the playlist
 	 * @return boolean Status of the command
@@ -477,17 +477,17 @@ class MPD {
 			$this->err_log[] = "Song ID and time should both be numeric";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_PL_ADDID, array($uri, $pos)) !== false) {
 			$this->update();
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Clears the current playlist. 
-	 * 
+	 * Clears the current playlist.
+	 *
 	 * @return boolean Status of the command
 	 */
 	function playlist_clear() {
@@ -497,10 +497,10 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Deletes the song SONGID from the playlist
-	 * 
+	 *
 	 * @param integer $id ID to remove
 	 * @return boolean Status of the command
 	 */
@@ -509,17 +509,17 @@ class MPD {
 			$this->err_log[] = "Song ID must be numeric";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_PL_DELETEID, array($id)) !== false) {
 			$this->update();
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Moves the song at FROM to TO in the playlist.
-	 * 
+	 *
 	 * @param integer $from From playlist position
 	 * @param integer $to To playlist position
 	 * @return boolean Status of the command
@@ -529,17 +529,17 @@ class MPD {
 			$this->err_log[] = "From and To has to be numeric";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_PL_MOVE, array($from, $to)) !== false) {
 			$this->update();
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Moves the range of songs at START:END to TO in the playlist.
-	 * 
+	 *
 	 * @param integer $start Start position
 	 * @param integer $end End position
 	 * @param integer $to New position
@@ -550,18 +550,18 @@ class MPD {
 			$this->err_log[] = "Start, End and To has to be numeric";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_PL_MOVE_MULTI, array("$start:$end", $to)) !== false) {
 			$this->update();
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Moves the song with FROM (songid) to TO (playlist index) in the playlist. 
-	 * If TO is negative, it is relative to the current song in the playlist (if there is one). 
-	 * 
+	 * Moves the song with FROM (songid) to TO (playlist index) in the playlist.
+	 * If TO is negative, it is relative to the current song in the playlist (if there is one).
+	 *
 	 * @param integer $from From song id
 	 * @param integer $to To playlist index
 	 * @return boolean Status of the command
@@ -571,17 +571,17 @@ class MPD {
 			$this->err_log[] = "From and To has to be numeric";
 			return false;
 		}
-		
+
 		if ($this->cmd(CMD_PL_MOVE_ID, array($from, $to)) !== false) {
 			$this->update();
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Shuffles the current playlist.
-	 * 
+	 *
 	 * @return boolean Status of the command
 	 */
 	function playlist_shuffle() {
@@ -591,10 +591,10 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Lists the contents of the directory URI.
-	 * 
+	 *
 	 * @param string $uri The dir to display, default is root dir
 	 * @return boolean|array Returns false if command failed and an array containing the dirlist and other stuffs on success ;)
 	 */
@@ -605,10 +605,10 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * List all genres
-	 * 
+	 *
 	 * @return boolean|array Returns false if command failed and an array containing the result on success
 	 */
 	function list_genres() {
@@ -618,10 +618,10 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * List all artists
-	 * 
+	 *
 	 * @return boolean|array Returns false if command failed and an array containing the result on success
 	 */
 	function list_artists() {
@@ -631,10 +631,10 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * List all albums
-	 * 
+	 *
 	 * @return boolean|array Returns false if command failed and an array containing the result on success
 	 */
 	function list_albums() {
@@ -644,12 +644,12 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Searches for any song that contains WHAT. The search WHAT is not case sensitive.
-	 * TYPE can be any tag supported by MPD, or one of the two special parameters — 
+	 * TYPE can be any tag supported by MPD, or one of the two special parameters —
 	 * file to search by full path (relative to database root), and any to match against all available tags
-	 * 
+	 *
 	 * @param string $type Type to search for
 	 * @param string $what case insensitive search string
 	 * @return boolean|array Returns false if command failed and an array containing the result on success
@@ -659,17 +659,17 @@ class MPD {
 			$this->err_log[] = "Invalid TYPE or WHAT empty";
 			return false;
 		}
-		
+
 		$search_res = $this->cmd(CMD_DB_SEARCH, array($type, $what));
 		if ($search_res !== false) {
 			return $this->parse_playlist($search_res);
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Counts the number of songs and their total playtime in the db matching WHAT exactly.
-	 * 
+	 *
 	 * @param string $type Type to search for
 	 * @param string $what case sensitive search string
 	 * @return boolean|array Returns false if command failed and an array containing the result on success
@@ -679,17 +679,17 @@ class MPD {
 			$this->err_log[] = "Invalid TYPE or WHAT empty";
 			return false;
 		}
-		
+
 		$count_res = $this->cmd(CMD_DB_COUNT, array($type, $what));
 		if ($count_res !== false) {
 			return $this->parse_list($count_res, true);
 		}
 	}
-	
+
 	/**
 	 * Updates the music database: find new files, remove deleted files, update modified files.
 	 * URI is a particular directory or song/file to update. If you do not specify it, everything is updated.
-	 * 
+	 *
 	 * @param string $uri (Optional) If URI is give database only updates files in that URI
 	 * @return boolean|array Returns false if command fails and returns updating_db: JOBID where JOBID is a positive number identifying the update job on success
 	 */
@@ -700,10 +700,10 @@ class MPD {
 			return $this->parse_list($update_res, true);
 		}
 	}
-	
+
 	/**
 	 * Displays the song info of the current song (same song that is identified in status).
-	 * 
+	 *
 	 * @return boolean|array Returns false on failure and current song on success
 	 */
 	function current_song() {
@@ -713,38 +713,38 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Displays a list of all songs in the playlist.
-	 * 
+	 *
 	 * @return array Returns an array containing the songs in the playlist
 	 */
 	function playlist() {
 		return $this->playlist;
 	}
-	
+
 	/**
 	 * Reports the current status of the player and the volume level.
-	 * 
+	 *
 	 * @return array Returns and array containing the status
 	 */
 	function server_status() {
 		return $this->server_status;
 	}
-	
+
 	/**
 	 * Displays statistics.
-	 * 
+	 *
 	 * @return array Returns an array containing the statistics
 	 */
 	function server_stats() {
 		return $this->server_statistics;
 	}
-	
+
 	/**
 	 * Prints a list of the playlist directory.
-	 * 
-	 * @return boolean|array Returns false on failure and playlists on success 
+	 *
+	 * @return boolean|array Returns false on failure and playlists on success
 	 */
 	function playlists() {
 		$list_pl_res = $this->cmd(CMD_LISTPLAYLISTS);
@@ -753,10 +753,10 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Lists the songs with metadata in the playlist. Playlist plugins are supported. 
-	 * 
+	 * Lists the songs with metadata in the playlist. Playlist plugins are supported.
+	 *
 	 * @param string $playlist Name of the playlist to display
 	 * @return boolean|array Returns false on failure and playlist info on success
 	 */
@@ -765,17 +765,17 @@ class MPD {
 			$this->err_log[] = "Playlist name must not be empty";
 			return false;
 		}
-		
+
 		$pl_res = $this->cmd(CMD_PLAYLISTINFO, array($playlist));
 		if ($pl_res !== false) {
 			return $this->parse_playlist($pl_res);
 		}
-		return false;		
+		return false;
 	}
-	
+
 	/**
-	 * Loads the playlist into the current queue. Playlist plugins are supported. 
-	 * 
+	 * Loads the playlist into the current queue. Playlist plugins are supported.
+	 *
 	 * @param string $playlist Playlist to load
 	 * @return boolean Returns false on failure and true on success
 	 */
@@ -784,18 +784,18 @@ class MPD {
 			$this->err_log[] = "Playlist name must not be empty";
 			return false;
 		}
-		
+
 		$pl_res = $this->cmd(CMD_PLAYLISTLOAD, array($playlist));
 		if ($pl_res !== false) {
 			return true;
 		}
-		return false;		
+		return false;
 	}
-	
+
 	/**
 	 * Adds URI to the playlist NAME.m3u.
 	 * NAME.m3u will be created if it does not exist.
-	 * 
+	 *
 	 * @param string $playlist Playlist to add to
 	 * @param string $uri URI to add
 	 * @return boolean Returns false on failure and true on success
@@ -805,17 +805,17 @@ class MPD {
 			$this->err_log[] = "Playlist name and URI must not be empty";
 			return false;
 		}
-		
+
 		$pl_res = $this->cmd(CMD_PLAYLISTADD, array($playlist, $uri));
 		if ($pl_res !== false) {
 			return true;
 		}
-		return false;	
+		return false;
 	}
-	
+
 	/**
 	 * Clears the playlist NAME.m3u.
-	 * 
+	 *
 	 * @param string $playlist Playlist to clear
 	 * @return boolean Returns false on failure and true on success
 	 */
@@ -824,17 +824,17 @@ class MPD {
 			$this->err_log[] = "Playlist name must not be empty";
 			return false;
 		}
-		
+
 		$pl_res = $this->cmd(CMD_PLAYLISTCLEAR, array($playlist));
 		if ($pl_res !== false) {
 			return true;
 		}
-		return false;	
+		return false;
 	}
-	
+
 	/**
 	 * Deletes SONGPOS from the playlist NAME.m3u
-	 * 
+	 *
 	 * @param string $playlist Playlist to remove from
 	 * @param integer $song_pos Position of the song to remove
 	 * @return boolean Returns false on failure and true on success
@@ -844,17 +844,17 @@ class MPD {
 			$this->err_log[] = "Playlist name and song position must not be empty and song position must be numeric";
 			return false;
 		}
-		
+
 		$pl_res = $this->cmd(CMD_PLAYLISTDELETE, array($playlist, $song_pos));
 		if ($pl_res !== false) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Moves SONGID in the playlist NAME.m3u to the position SONGPOS.
-	 * 
+	 *
 	 * @param string $playlist The playlist to interact with
 	 * @param integer $song_id I of the song to move
 	 * @param integer $song_pos Position of the new position in the playlist
@@ -865,17 +865,17 @@ class MPD {
 			$this->err_log[] = "Playlist name, song ID and song position must not be empty and song ID and song position must be numeric";
 			return false;
 		}
-		
+
 		$pl_res = $this->cmd(CMD_PLAYLISTMOVE, array($playlist, $song_id, $song_pos));
 		if ($pl_res !== false) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Renames the playlist NAME.m3u to NEW_NAME.m3u.
-	 * 
+	 *
 	 * @param string $playlist Playlist to rename
 	 * @param strnig $new_name New name of playlist
 	 * @return boolean Returns false on failure and true on success
@@ -885,17 +885,17 @@ class MPD {
 			$this->err_log[] = "Playlist name and new name must not be empty";
 			return false;
 		}
-		
+
 		$pl_res = $this->cmd(CMD_PLAYLISTRENAME, array($playlist, $new_name));
 		if ($pl_res !== false) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Removes the playlist NAME.m3u from the playlist directory.
-	 * 
+	 *
 	 * @param string $playlist Playlist to remove
 	 * @return boolean Returns false on failure and true on success
 	 */
@@ -904,17 +904,17 @@ class MPD {
 			$this->err_log[] = "Playlist name must not be empty";
 			return false;
 		}
-		
+
 		$pl_res = $this->cmd(CMD_PLAYLISTREMOVE, array($playlist));
 		if ($pl_res !== false) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Saves the current playlist to NAME.m3u in the playlist directory.
-	 * 
+	 *
 	 * @param string $playlist Name of the new playlist
 	 * @return boolean Returns false on failure and true on success
 	 */
@@ -923,17 +923,17 @@ class MPD {
 			$this->err_log[] = "Playlist name must not be empty";
 			return false;
 		}
-		
+
 		$pl_res = $this->cmd(CMD_PLAYLISTSAVE, array($playlist));
 		if ($pl_res !== false) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Closes the connection to MPD.
-	 * 
+	 *
 	 * @return boolean Returns false on failure and true on success
 	 */
 	function close() {
@@ -943,10 +943,10 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Kills MPD.
-	 * 
+	 *
 	 * @return boolean Returns false on failure and true on success
 	 */
 	function kill() {
@@ -956,10 +956,10 @@ class MPD {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Send a command to the MPD server.
-	 * 
+	 *
 	 * @param string $cmd The command to send
 	 * @param array $args An array with the command arguments
 	 * @return boolean|string Returns false if the command fails else returns the command result from the MPD server
@@ -968,58 +968,58 @@ class MPD {
 		if (!$this->is_connected) {
 			$this->err_log[] = "Not connected";
 			return false;
-			
+
 		} else if (!is_array($args)) {
 			$this->err_log[] = "Arguments not presented as an array";
 			return false;
-			
+
 		} else {
 			$response_str = '';
-			
+
 			$cmd_str = '';
 			foreach($args as $arg) {
 				$cmd_str .= ' "'.$arg.'"';
 			}
 			$cmd_str = $cmd.$cmd_str;
-			
+
 			$this->log_input($cmd_str);
-			
+
 			fputs($this->sock, "$cmd_str\n");
 			while (!feof($this->sock)) {
 				$res = fgets($this->sock, 1024);
-				
+
 				$this->log_output($res);
 
 				// ignoring OK signal at end of transmission
 				if (strncmp(RES_OK, $res, strlen(RES_OK)) == 0) {
 					break;
 				}
-				
+
 				// catch the message at the end of transmission
 				if (strncmp(RES_ERR, $res, strlen(RES_ERR)) == 0) {
-					list ($tmp, $err) = split(RES_ERR . ' ', $res);
+					list ($tmp, $err) = explode(RES_ERR . ' ', $res);
 					$this->err_log[] = strtok($err, "\n");
 				}
-				
+
 				if (count($this->err_log) > 0) {
 					return false;
 				}
-				
+
 				$response_str .= $res;
 			}
 			return $response_str;
 		}
 	}
-	
+
 	/**
 	 * Updates the object variables.
-	 * 
+	 *
 	 * @return boolean Returns false if something went wrong else returns true
 	 */
 	function update() {
 		$srv_stats = array();
 		$srv_status = array();
-		
+
 		// get server stats
 		$stats_res = $this->cmd(CMD_STATS);
 		if ($stats_res === false) {
@@ -1039,16 +1039,16 @@ class MPD {
 			$srv_status = $this->parse_list($status_res, true);
 		}
 		$this->server_status = $srv_status;
-		
+
 		// get playlist
 		$plist_res = $this->cmd(CMD_PLIST);
 		$this->playlist = $this->parse_playlist($plist_res);
-		
+
 		// other useful info
 		$this->state = $srv_status['state'];
 		if ($this->state == STATE_PLAYING || $this->state == STATE_PAUSED) {
 			$this->current_track_id = $srv_status['songid'];
-			list ($this->current_track_pos, $this->current_track_len) = split(":", $srv_status['time']);
+			list ($this->current_track_pos, $this->current_track_len) = explode(":", $srv_status['time']);
 		} else {
 			$this->current_track_id = -1;
 			$this->current_track_pos = -1;
@@ -1063,62 +1063,62 @@ class MPD {
 		$this->bitrate = $srv_status['bitrate'];
 		$this->audio = $srv_status['audio'];
 		$this->single = $srv_status['single'];
-		
+
 		$this->db_last_updated = $srv_stats['db_update'];
 		$this->uptime = $srv_stats['uptime'];
 		$this->playtime = $srv_stats['playtime'];
 		$this->num_artists = $srv_stats['artists'];
 		$this->num_songs = $srv_stats['songs'];
 		$this->num_albums = $srv_stats['albums'];
-		
+
 		return true;
 	}
 
 	/**
 	 * Get the an array of error messages that has been collected since the object was instantiated.
-	 * 
+	 *
 	 * @return array Returns an array with error messages
 	 */
 	function get_error() {
 		return $this->err_log;
 	}
-	
+
 	/**
 	 * Get the MPD connection status.
-	 * 
+	 *
 	 * @return boolean Returns true if connected to MPD server, else returns false
 	 */
 	function get_connection_status() {
 		return $this->is_connected;
 	}
-	
+
 	/**
 	 * Get the MPD version.
-	 * 
+	 *
 	 * @return string Returns the version of the MPD
 	 */
 	function get_version() {
 		return $this->version;
 	}
-	
+
 	/**
 	 * Get the current debug log.
-	 * 
+	 *
 	 * @return array Returns the debug log
 	 */
 	function get_debug_log() {
 		return $this->debug_log;
 	}
-	
+
 	/**
 	 * Get the MPD class version.
-	 * 
+	 *
 	 * @return string Returns the currenct version of this MPD class
 	 */
 	function get_php_mpd_version() {
 		return $this->php_mpd_version;
 	}
-	
+
 	private function validate_type($type) {
 		$type_valid = false;
 		switch (strtolower($type)) {
@@ -1140,7 +1140,7 @@ class MPD {
 		}
 		return $type_valid;
 	}
-	
+
 	private function parse_list($list_res, $use_str_assoc = false) {
 		$list = array();
 		if ($list_res === false) {
@@ -1148,7 +1148,7 @@ class MPD {
 		} else {
 			$list_line = strtok($list_res, "\n");
 			while ($list_line) {
-				list ($key, $value) = split(": ", $list_line);
+				list ($key, $value) = explode(": ", $list_line);
 				if ($value != '') {
 					if ($use_str_assoc === true) {
 						$list[$key] = $value;
@@ -1161,10 +1161,10 @@ class MPD {
 		}
 		return $list;
 	}
-	
+
 	private function parse_playlist($plist_res) {
 		$playlist = array();
-		
+
 		if ($plist_res === false) {
 			$this->err = "Playlist empty";
 		} else {
@@ -1172,31 +1172,31 @@ class MPD {
 			$counter = -1;
 			$type = 'unknown';
 			while ($plist_line) {
-				list ($key, $value) = split(": ", $plist_line);
+				list ($key, $value) = explode(": ", $plist_line);
 				if ($key == 'file' || $key == 'directory' || $key == 'playlist') {
 					$type = $key;
 					$counter++;
-					
+
 					$playlist[$counter]['type'] = $type;
 					$playlist[$counter]['name'] = $value;
 					$playlist[$counter]['basename'] = basename($value);
 				} else {
 					$playlist[$counter][$key] = $value;
 				}
-				
+
 				$plist_line = strtok("\n");
 			}
 		}
-		
+
 		return $playlist;
 	}
-	
+
 	private function log_input($msg) {
 		if ($this->debug_mode == true) {
 			$this->debug_log[] = "-> $msg";
 		}
 	}
-	
+
 	private function log_output($msg) {
 		if ($this->debug_mode == true) {
 			$this->debug_log[] = "<- $msg";
